@@ -6,7 +6,7 @@ import * as iam from '@aws-cdk/aws-iam';
 import { ServicePrincipal, ManagedPolicy, PolicyDocument, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 import { EksClusterProduct } from './product/eks-cluster';
 import { PipelineProduct } from './product/pipeline';
-
+import { ContainerProduct } from './product/eks-container';
 
 export class ScEksStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -71,7 +71,7 @@ export class ScEksStack extends cdk.Stack {
         ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
         ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryFullAccess'),
         ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerServiceFullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess')
+        ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess'),
       ],
       inlinePolicies: {'sc-policy': new PolicyDocument({
         statements: [new PolicyStatement({
@@ -118,7 +118,12 @@ export class ScEksStack extends cdk.Stack {
 
     const testUser = new iam.Role(this, 'test-role', {
       roleName: 'ServiceCatalogEnduser',
-      managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName('AWSServiceCatalogEndUserFullAccess')],
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName('AWSServiceCatalogEndUserFullAccess'),
+        ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'),
+      
+      ],
+        
       assumedBy: new iam.AccountRootPrincipal()
     })
 
@@ -132,14 +137,21 @@ export class ScEksStack extends cdk.Stack {
 
     const eksClusterProduct = new EksClusterProduct(this, 'eks-product');
     const pipelineProduct = new PipelineProduct(this, 'pipeline-product');
+    const containerProduct = new ContainerProduct(this, 'container-product');
 
     new CfnPortfolioProductAssociation(this, 'cluster-association', {
       portfolioId: portfolio.ref,
       productId: eksClusterProduct.product.ref
-    })
+    });
+
     new CfnPortfolioProductAssociation(this, 'pipeline-association', {
       portfolioId: portfolio.ref,
       productId: pipelineProduct.product.ref
+    });
+
+    new CfnPortfolioProductAssociation(this, 'container-association', {
+      portfolioId: portfolio.ref,
+      productId: containerProduct.product.ref
     })
 
   }

@@ -88,7 +88,7 @@ export function deployToEKSspec (scope: cdk.Construct, region: string, cluster: 
 
     deployBuildSpec.addToRolePolicy(new iam.PolicyStatement({
         actions: ['sts:AssumeRole'],
-        resources: [roleToAssume.roleArn]
+        resources: [roleToAssume]
     }))
 
     return deployBuildSpec;

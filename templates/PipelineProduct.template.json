@@ -528,7 +528,10 @@
             },
             {
               "Action": "sts:AssumeRole",
-              "Effect": "Allow"
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "deployRole"
+              }
             },
             {
               "Action": [

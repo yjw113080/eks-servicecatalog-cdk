@@ -4,7 +4,9 @@ import { Asset } from '@aws-cdk/aws-s3-assets';
 import { getProductTemplate } from '../../../utils/product-builder';
 import { ContainerProductTemplate } from './eks-container.template';
 
-export class EksClusterProduct extends cdk.Construct {
+export class ContainerProduct extends cdk.Construct {
+  public readonly product: CfnCloudFormationProduct;
+
     constructor(scope: cdk.Construct, id: string) {
         super(scope, id);
 
@@ -14,7 +16,7 @@ export class EksClusterProduct extends cdk.Construct {
           path: template.templatePath
         });
 
-        new CfnCloudFormationProduct(this, 'eks-container-product', {
+        const product = new CfnCloudFormationProduct(this, 'eks-container-product', {
             name: 'Containers on a EKS cluster',
             description: 'Provision containers',
             owner: 'Jane Doe',
@@ -26,6 +28,7 @@ export class EksClusterProduct extends cdk.Construct {
               }
             ]
           });
+          this.product = product;
     
     }
 }

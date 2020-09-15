@@ -1,0 +1,166 @@
+{
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Container Configuration"
+          },
+          "Parameters": [
+            "cluster",
+            "kubectlrole"
+          ]
+        }
+      ],
+      "ParameterLabels": {
+        "cluster": {
+          "default": "EKS cluster name where you will deploy the application."
+        },
+        "kubectlrole": {
+          "default": "IAM Role ARN which can issue requests to create container resources on your behalf. If you do not have information, please reach out to IT support (XX-YYYY-ZZZZ)."
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "cluster": {
+      "Type": "String",
+      "Description": "EKS cluster name where you will deploy the application."
+    },
+    "kubectlrole": {
+      "Type": "String",
+      "Description": "IAM Role ARN which can issue requests to create container resources on your behalf. If you do not have information, please reach out to IT support (XX-YYYY-ZZZZ)."
+    },
+    "AssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2S3Bucket9ABBD5A2": {
+      "Type": "String",
+      "Description": "S3 bucket for asset \"b7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2\""
+    },
+    "AssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2S3VersionKey40FF2C4A": {
+      "Type": "String",
+      "Description": "S3 key for asset version \"b7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2\""
+    },
+    "AssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2ArtifactHashE86B38C7": {
+      "Type": "String",
+      "Description": "Artifact hash for asset \"b7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2\""
+    },
+    "AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket24A39C33": {
+      "Type": "String",
+      "Description": "S3 bucket for asset \"7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a\""
+    },
+    "AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8": {
+      "Type": "String",
+      "Description": "S3 key for asset version \"7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a\""
+    },
+    "AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aArtifactHash84962CBE": {
+      "Type": "String",
+      "Description": "Artifact hash for asset \"7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690a\""
+    },
+    "AssetParameters2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400S3Bucket18527904": {
+      "Type": "String",
+      "Description": "S3 bucket for asset \"2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400\""
+    },
+    "AssetParameters2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400S3VersionKey97CA2EF8": {
+      "Type": "String",
+      "Description": "S3 key for asset version \"2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400\""
+    },
+    "AssetParameters2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400ArtifactHashAE3E748F": {
+      "Type": "String",
+      "Description": "Artifact hash for asset \"2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400\""
+    }
+  },
+  "Resources": {
+    "targetclustermanifestnginx07DC97868": {
+      "Type": "Custom::AWSCDK-EKS-KubernetesResource",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "ContainerProducttargetcluster8758ADFCKubectlProviderNestedStackContainerProducttargetcluster8758ADFCKubectlProviderNestedStackResource87FE5260",
+            "Outputs.ContainerProductContainerProducttargetcluster8758ADFCKubectlProviderframeworkonEvent33B32089Arn"
+          ]
+        },
+        "Manifest": "[{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"name\":\"nginx-deployment\",\"labels\":{\"app\":\"nginx\"}},\"spec\":{\"replicas\":2,\"selector\":{\"matchLabels\":{\"app\":\"nginx\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"nginx\"}},\"spec\":{\"containers\":[{\"name\":\"nginx\",\"image\":\"nginx:1.7.9\",\"ports\":[{\"containerPort\":80}]}]}}}}]",
+        "ClusterName": {
+          "Ref": "cluster"
+        },
+        "RoleArn": {
+          "Ref": "kubectlrole"
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "ContainerProduct/target-cluster/manifest-nginx0/Resource/Default"
+      }
+    },
+    "ContainerProducttargetcluster8758ADFCKubectlProviderNestedStackContainerProducttargetcluster8758ADFCKubectlProviderNestedStackResource87FE5260": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "",
+            [
+              "https://s3.eu-west-1.",
+              {
+                "Ref": "AWS::URLSuffix"
+              },
+              "/",
+              {
+                "Ref": "AssetParameters2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400S3Bucket18527904"
+              },
+              "/",
+              {
+                "Fn::Select": [
+                  0,
+                  {
+                    "Fn::Split": [
+                      "||",
+                      {
+                        "Ref": "AssetParameters2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400S3VersionKey97CA2EF8"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "||",
+                      {
+                        "Ref": "AssetParameters2fe29def3cb130ec505647b160d10932b2ab8cda0866a0fe24c10a9db1497400S3VersionKey97CA2EF8"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        "Parameters": {
+          "referencetoContainerProductclusterD3E29D33Ref": {
+            "Ref": "cluster"
+          },
+          "referencetoContainerProductkubectlrole2F2A77E7Ref": {
+            "Ref": "kubectlrole"
+          },
+          "referencetoContainerProductAssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2S3Bucket7B82D034Ref": {
+            "Ref": "AssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2S3Bucket9ABBD5A2"
+          },
+          "referencetoContainerProductAssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2S3VersionKey58D0724ARef": {
+            "Ref": "AssetParametersb7d8a9750f8bfded8ac76be100e3bee1c3d4824df006766110d023f42952f5c2S3VersionKey40FF2C4A"
+          },
+          "referencetoContainerProductAssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3BucketA67C0699Ref": {
+            "Ref": "AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3Bucket24A39C33"
+          },
+          "referencetoContainerProductAssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKeyF711A3C9Ref": {
+            "Ref": "AssetParameters7b8f901e53744758131669f2606b340cd2b32759fbbfc3dd93fb3fa4d08d690aS3VersionKey0E38F1A8"
+          }
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "ContainerProduct/ContainerProducttargetcluster8758ADFC-KubectlProvider.NestedStack/ContainerProducttargetcluster8758ADFC-KubectlProvider.NestedStackResource"
+      }
+    }
+  }
+}
