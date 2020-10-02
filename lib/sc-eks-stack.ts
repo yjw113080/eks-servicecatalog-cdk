@@ -120,7 +120,13 @@ export class ScEksStack extends cdk.Stack {
       assumedBy: new ServicePrincipal('servicecatalog.amazonaws.com')
     })
 
+    launchRole.assumeRolePolicy?.addStatements(new iam.PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ["sts:AssumeRole"],
+      principals: [new iam.AccountRootPrincipal]
+    }))
 
+    
     new CfnLaunchRoleConstraint(this, 'launch-role-cluster', {
       portfolioId: portfolio.ref,
       productId: eksClusterProduct.product.ref,
@@ -148,7 +154,10 @@ export class ScEksStack extends cdk.Stack {
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName('AWSServiceCatalogEndUserFullAccess'),
         ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ReadOnlyAccess')
+        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ReadOnlyAccess'),
+        ManagedPolicy.fromAwsManagedPolicyName('AWSCodeCommitPowerUser'),
+        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryPowerUser'),
+        ManagedPolicy.fromAwsManagedPolicyName('AWSCodePipeline_ReadOnlyAccess'),
       ],
         
       assumedBy: new iam.AccountRootPrincipal()
@@ -164,6 +173,11 @@ export class ScEksStack extends cdk.Stack {
     new CfnOutput(this, 'enduser-arn', {
       exportName: 'EndUserRole',
       value: testUser.roleArn
+    })
+
+    new CfnOutput(this, 'launch-role-arn', {
+      exportName: 'LaunchMasterRole',
+      value: launchRole.roleArn
     })
   }
 }

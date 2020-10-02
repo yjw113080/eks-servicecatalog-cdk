@@ -15,7 +15,7 @@
       ],
       "ParameterLabels": {
         "cluster": {
-          "default": "EKS cluster ARN where you will deploy the application."
+          "default": "EKS cluster name where you will deploy the application."
         },
         "deployRole": {
           "default": "IAM Role ARN to assume when deploying your code."
@@ -29,7 +29,7 @@
   "Parameters": {
     "cluster": {
       "Type": "String",
-      "Description": "EKS cluster ARN where you will deploy the application."
+      "Description": "EKS cluster name where you will deploy the application."
     },
     "deployRole": {
       "Type": "String",
@@ -91,7 +91,7 @@
                   {
                     "Ref": "AWS::Partition"
                   },
-                  ":codepipeline:ap-northeast-2:865200059792:",
+                  ":codepipeline:us-east-1:865200059792:",
                   {
                     "Ref": "pipelineDBECAE49"
                   }
@@ -161,7 +161,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
+                      ":logs:us-east-1:865200059792:log-group:/aws/codebuild/",
                       {
                         "Ref": "buildtoecr6773C6BF"
                       }
@@ -176,7 +176,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
+                      ":logs:us-east-1:865200059792:log-group:/aws/codebuild/",
                       {
                         "Ref": "buildtoecr6773C6BF"
                       },
@@ -202,7 +202,7 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":codebuild:ap-northeast-2:865200059792:report-group/",
+                    ":codebuild:us-east-1:865200059792:report-group/",
                     {
                       "Ref": "buildtoecr6773C6BF"
                     },
@@ -405,7 +405,7 @@
         "aws:cdk:path": "PipelineProduct/build-to-ecr/Resource"
       }
     },
-    "deploytoeksapnortheast2RoleAD30D12C": {
+    "deploytoeksuseast1RoleC4A23ACD": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -422,39 +422,14 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "PipelineProduct/deploy-to-eks-ap-northeast-2/Role/Resource"
+        "aws:cdk:path": "PipelineProduct/deploy-to-eks-us-east-1/Role/Resource"
       }
     },
-    "deploytoeksapnortheast2RoleDefaultPolicy224731D4": {
+    "deploytoeksuseast1RoleDefaultPolicyA0976B18": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
           "Statement": [
-            {
-              "Action": [
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition"
-                    },
-                    ":ecr:ap-northeast-2:865200059792:repository/aws-cdk/assets"
-                  ]
-                ]
-              }
-            },
-            {
-              "Action": "ecr:GetAuthorizationToken",
-              "Effect": "Allow",
-              "Resource": "*"
-            },
             {
               "Action": [
                 "logs:CreateLogGroup",
@@ -471,9 +446,9 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
+                      ":logs:us-east-1:865200059792:log-group:/aws/codebuild/",
                       {
-                        "Ref": "deploytoeksapnortheast2101FC7D7"
+                        "Ref": "deploytoeksuseast1E9BA2EC6"
                       }
                     ]
                   ]
@@ -486,9 +461,9 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
+                      ":logs:us-east-1:865200059792:log-group:/aws/codebuild/",
                       {
-                        "Ref": "deploytoeksapnortheast2101FC7D7"
+                        "Ref": "deploytoeksuseast1E9BA2EC6"
                       },
                       ":*"
                     ]
@@ -512,9 +487,9 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":codebuild:ap-northeast-2:865200059792:report-group/",
+                    ":codebuild:us-east-1:865200059792:report-group/",
                     {
-                      "Ref": "deploytoeksapnortheast2101FC7D7"
+                      "Ref": "deploytoeksuseast1E9BA2EC6"
                     },
                     "-*"
                   ]
@@ -594,18 +569,18 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "deploytoeksapnortheast2RoleDefaultPolicy224731D4",
+        "PolicyName": "deploytoeksuseast1RoleDefaultPolicyA0976B18",
         "Roles": [
           {
-            "Ref": "deploytoeksapnortheast2RoleAD30D12C"
+            "Ref": "deploytoeksuseast1RoleC4A23ACD"
           }
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "PipelineProduct/deploy-to-eks-ap-northeast-2/Role/DefaultPolicy/Resource"
+        "aws:cdk:path": "PipelineProduct/deploy-to-eks-us-east-1/Role/DefaultPolicy/Resource"
       }
     },
-    "deploytoeksapnortheast2101FC7D7": {
+    "deploytoeksuseast1E9BA2EC6": {
       "Type": "AWS::CodeBuild::Project",
       "Properties": {
         "Artifacts": {
@@ -617,7 +592,7 @@
             {
               "Name": "REGION",
               "Type": "PLAINTEXT",
-              "Value": "ap-northeast-2"
+              "Value": "us-east-1"
             },
             {
               "Name": "CLUSTER_NAME",
@@ -679,25 +654,14 @@
               }
             }
           ],
-          "Image": {
-            "Fn::Join": [
-              "",
-              [
-                "865200059792.dkr.ecr.ap-northeast-2.",
-                {
-                  "Ref": "AWS::URLSuffix"
-                },
-                "/aws-cdk/assets:c9833825991816d1d167017b03997ef795537caa32679712173297fe4d33a4d9"
-              ]
-            ]
-          },
+          "Image": "jiwony/kubectl-buildimage",
           "ImagePullCredentialsType": "SERVICE_ROLE",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
         },
         "ServiceRole": {
           "Fn::GetAtt": [
-            "deploytoeksapnortheast2RoleAD30D12C",
+            "deploytoeksuseast1RoleC4A23ACD",
             "Arn"
           ]
         },
@@ -710,7 +674,7 @@
                 {
                   "Ref": "deployRole"
                 },
-                "\\\" --role-session-name codebuild-cdk)\",\n        \"export AWS_ACCESS_KEY_ID=\\\"$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')\\\"\",\n        \"export AWS_SECRET_ACCESS_KEY=\\\"$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')\\\"\",\n        \"export AWS_SESSION_TOKEN=\\\"$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')\\\"\",\n        \"export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')\",\n        \"sed -i 's@CONTAINER_IMAGE@'\\\"$ECR_REPO_URI:$TAG\\\"'@' app-deployment.yaml\",\n        \"kubectl apply -f app-deployment.yaml\"\n      ]\n    }\n  }\n}"
+                "\\\" --role-session-name codebuild-cdk)\",\n        \"export AWS_ACCESS_KEY_ID=\\\"$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')\\\"\",\n        \"export AWS_SECRET_ACCESS_KEY=\\\"$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')\\\"\",\n        \"export AWS_SESSION_TOKEN=\\\"$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')\\\"\",\n        \"export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')\",\n        \"sed -i 's@CONTAINER_IMAGE@'\\\"$ECR_REPO_URI:$TAG\\\"'@' app-deployment.yaml\",\n        \"pwd && ls -al\",\n        \"kubectl apply -f .\"\n      ]\n    }\n  }\n}"
               ]
             ]
           },
@@ -724,7 +688,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "PipelineProduct/deploy-to-eks-ap-northeast-2/Resource"
+        "aws:cdk:path": "PipelineProduct/deploy-to-eks-us-east-1/Resource"
       }
     },
     "pipelineArtifactsBucketEncryptionKey16620CDF": {
@@ -848,7 +812,7 @@
               "Principal": {
                 "AWS": {
                   "Fn::GetAtt": [
-                    "deploytoeksapnortheast2RoleAD30D12C",
+                    "deploytoeksuseast1RoleC4A23ACD",
                     "Arn"
                   ]
                 }
@@ -866,7 +830,7 @@
               "Principal": {
                 "AWS": {
                   "Fn::GetAtt": [
-                    "deploytoeksapnortheast2RoleAD30D12C",
+                    "deploytoeksuseast1RoleC4A23ACD",
                     "Arn"
                   ]
                 }
@@ -1137,7 +1101,7 @@
                 },
                 "Configuration": {
                   "ProjectName": {
-                    "Ref": "deploytoeksapnortheast2101FC7D7"
+                    "Ref": "deploytoeksuseast1E9BA2EC6"
                   }
                 },
                 "InputArtifacts": [
@@ -1333,7 +1297,7 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":codepipeline:ap-northeast-2:865200059792:",
+                    ":codepipeline:us-east-1:865200059792:",
                     {
                       "Ref": "pipelineDBECAE49"
                     }
@@ -1464,7 +1428,7 @@
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "deploytoeksapnortheast2101FC7D7",
+                  "deploytoeksuseast1E9BA2EC6",
                   "Arn"
                 ]
               }
@@ -1481,6 +1445,89 @@
       },
       "Metadata": {
         "aws:cdk:path": "PipelineProduct/pipeline/DeployToEKScluster/DeployToEKScluster/CodePipelineActionRole/DefaultPolicy/Resource"
+      }
+    }
+  },
+  "Outputs": {
+    "ccrepouri": {
+      "Value": {
+        "Fn::GetAtt": [
+          "codecommitrepo94F0CCF9",
+          "CloneUrlHttp"
+        ]
+      },
+      "Export": {
+        "Name": "CodeCommitRepository"
+      }
+    },
+    "ecrrepouri": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            {
+              "Fn::Select": [
+                4,
+                {
+                  "Fn::Split": [
+                    ":",
+                    {
+                      "Fn::GetAtt": [
+                        "ecrrepo74FE12DA",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            ".dkr.ecr.",
+            {
+              "Fn::Select": [
+                3,
+                {
+                  "Fn::Split": [
+                    ":",
+                    {
+                      "Fn::GetAtt": [
+                        "ecrrepo74FE12DA",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/",
+            {
+              "Ref": "ecrrepo74FE12DA"
+            }
+          ]
+        ]
+      },
+      "Export": {
+        "Name": "ECRrepository"
+      }
+    },
+    "pipelineouput": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://console.aws.amazon.com/codesuite/codepipeline/pipelines/",
+            {
+              "Ref": "pipelineDBECAE49"
+            },
+            "/view?region=us-east-1"
+          ]
+        ]
+      },
+      "Export": {
+        "Name": "PipelineConsoleUrl"
       }
     }
   }

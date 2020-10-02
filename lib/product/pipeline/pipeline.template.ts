@@ -15,7 +15,7 @@ class PipelineTemplate extends cdk.Stack {
 
     const cluster = new CfnParameter(this, 'cluster', {
         type: 'String',
-        description: 'EKS cluster ARN where you will deploy the application.'
+        description: 'EKS cluster name where you will deploy the application.'
     });
     const deployRole = new CfnParameter(this, 'deployRole', {
         type: 'String',
@@ -36,7 +36,7 @@ class PipelineTemplate extends cdk.Stack {
           ],
           ParameterLabels: {
             [cluster.logicalId]: {
-              default: 'EKS cluster ARN where you will deploy the application.'
+              default: 'EKS cluster name where you will deploy the application.'
             },
             [deployRole.logicalId]: {
                 default: 'IAM Role ARN to assume when deploying your code.'
@@ -59,7 +59,7 @@ class PipelineTemplate extends cdk.Stack {
     const deployToEksCluster = deployToEKSspec(this, cdk.Stack.of(this).region, cluster.valueAsString, ecrRepo, deployRole.valueAsString);
 
     const sourceOutput = new codepipeline.Artifact();
-    new codepipeline.Pipeline(this, 'pipeline', {
+    const pipeline = new codepipeline.Pipeline(this, 'pipeline', {
         stages: [
             {
                 stageName: 'Source',
@@ -84,6 +84,21 @@ class PipelineTemplate extends cdk.Stack {
                 })]
             }
         ]
+    })
+
+    new CfnOutput(this, 'cc-repo-uri', {
+      exportName: 'CodeCommitRepository',
+      value: repo.repositoryCloneUrlHttp
+    })
+
+    new CfnOutput(this, 'ecr-repo-uri', {
+      exportName: 'ECRrepository',
+      value: ecrRepo.repositoryUri
+    })
+
+    new CfnOutput(this, 'pipeline-ouput', {
+      exportName: 'PipelineConsoleUrl',
+      value: `https://console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipeline.pipelineName}/view?region=${cdk.Stack.of(this).region}`
     })
   }
 }

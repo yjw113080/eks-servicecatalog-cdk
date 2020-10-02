@@ -49,9 +49,10 @@ export function deployToEKSspec (scope: cdk.Construct, region: string, cluster: 
     
     const deployBuildSpec = new codebuild.PipelineProject(scope, `deploy-to-eks-${region}`, {
         environment: {
-            buildImage: codebuild.LinuxBuildImage.fromAsset(scope, `custom-image-for-eks-${region}`, {
-                directory: './utils/buildimage'
-            })
+            buildImage: codebuild.LinuxBuildImage.fromDockerRegistry('jiwony/kubectl-buildimage')
+            // buildImage: codebuild.LinuxBuildImage.fromAsset(scope, `custom-image-for-eks-${region}`, {
+            //     directory: './utils/buildimage'
+            // })
         },
         environmentVariables: { 
             'REGION': { value:  region },
