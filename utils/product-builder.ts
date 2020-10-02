@@ -13,7 +13,7 @@ export const getProductTemplate = (product: ProductTemplate) => {
   const defEnv = {
     env: {
       account: process.env.CDK_DEFAULT_ACCOUNT,
-      region: 'eu-west-1'
+      region: 'ap-northeast-2'
     }
   };
 

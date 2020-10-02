@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as sc from '@aws-cdk/aws-servicecatalog';
-import { CfnPortfolio, CfnPortfolioPrincipalAssociation, CfnPortfolioProductAssociation } from '@aws-cdk/aws-servicecatalog';
-import { CfnParameter, CfnRefElement, CfnStack } from '@aws-cdk/core';
+import { CfnLaunchRoleConstraint, CfnPortfolio, CfnPortfolioPrincipalAssociation, CfnPortfolioProductAssociation } from '@aws-cdk/aws-servicecatalog';
+import { CfnOutput, CfnParameter, CfnRefElement, CfnStack } from '@aws-cdk/core';
 import * as iam from '@aws-cdk/aws-iam';
 import { ServicePrincipal, ManagedPolicy, PolicyDocument, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 import { EksClusterProduct } from './product/eks-cluster';
@@ -31,17 +31,6 @@ export class ScEksStack extends cdk.Stack {
       default: 'Service Catalog Portfolio that contains reference architecture products for EKS.'
     })
 
-    // const linkedRole= new CfnParameter(this, 'linked-role', {
-    //   type: 'String',
-    //   description: '(Optional) The ARN of a role which can execute products in this portfolio.',
-    // })
-
-    // const createTestUser = new CfnParameter(this, 'create-test-user', {
-    //   type: 'String',
-    //   description: 'Type Yes to Create the ServiceCatalogEndusers IAM group. No if you have already created the group',
-    //   allowedValues: ['Yes', 'No'],
-    //   default: 'Yes'
-    // })
 
     // 2. Service Catalog PortFolio
     const portfolio = new CfnPortfolio(this, 'eks-portfolio', {
@@ -50,28 +39,44 @@ export class ScEksStack extends cdk.Stack {
       description: pfDescription.valueAsString
     })
 
-    // 3. Roles
-    // if (linkedRole.valueAsString != '') {
-    //   new CfnPortfolioPrincipalAssociation(this, 'link-role', {
-    //     principalArn: linkedRole.valueAsString,
-    //     portfolioId: portfolio.logicalId,
-    //     principalType: 'IAM'
-    //   })
-  
-    // }
 
-    const launchRole = new iam.Role(this, 'launch-role', {
-      roleName: 'sc-eks-launch-role',
+
+    // 2-1. Create Products and Associate them with Portfolio
+    const eksClusterProduct = new EksClusterProduct(this, 'eks-product');
+    const pipelineProduct = new PipelineProduct(this, 'pipeline-product');
+    const containerProduct = new ContainerProduct(this, 'container-product');
+
+    const clusterProductAssociation = new CfnPortfolioProductAssociation(this, 'cluster-association', {
+      portfolioId: portfolio.ref,
+      productId: eksClusterProduct.product.ref
+    });
+
+    const pipelineProductAssociation = new CfnPortfolioProductAssociation(this, 'pipeline-association', {
+      portfolioId: portfolio.ref,
+      productId: pipelineProduct.product.ref
+    });
+
+    const containerProductAssociation = new CfnPortfolioProductAssociation(this, 'container-association', {
+      portfolioId: portfolio.ref,
+      productId: containerProduct.product.ref
+    })
+
+    // 2-2. Create Launch Constraints over the products in the portfolio
+    const launchRole = new iam.Role(this, 'sc-eks-launch-role', {
       managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2FullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AWSCodeDeployFullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AWSCodePipelineFullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AWSCodeCommitFullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AWSCodeBuildAdminAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryFullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerServiceFullAccess'),
-        ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2FullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AWSCodeDeployFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AWSCodePipelineFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AWSCodeCommitFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AWSCodeBuildAdminAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerServiceFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess'),
+        // ManagedPolicy.fromAwsManagedPolicyName('IAMFullAccess'),
+        ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'),
+        
+
       ],
       inlinePolicies: {'sc-policy': new PolicyDocument({
         statements: [new PolicyStatement({
@@ -116,43 +121,49 @@ export class ScEksStack extends cdk.Stack {
     })
 
 
-    const testUser = new iam.Role(this, 'test-role', {
-      roleName: 'ServiceCatalogEnduser',
+    new CfnLaunchRoleConstraint(this, 'launch-role-cluster', {
+      portfolioId: portfolio.ref,
+      productId: eksClusterProduct.product.ref,
+      roleArn: launchRole.roleArn
+    }).addDependsOn(clusterProductAssociation)
+
+
+    new CfnLaunchRoleConstraint(this, 'launch-role-container', {
+      portfolioId: portfolio.ref,
+      productId: containerProduct.product.ref,
+      roleArn: launchRole.roleArn
+    }).addDependsOn(containerProductAssociation)
+
+    new CfnLaunchRoleConstraint(this, 'launch-role-pipeline', {
+      portfolioId: portfolio.ref,
+      productId: pipelineProduct.product.ref,
+      roleArn: launchRole.roleArn
+    }).addDependsOn(pipelineProductAssociation)
+
+
+
+
+    // 3. Create test users
+    const testUser = new iam.Role(this, 'sc-eks-enduser-role', {
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName('AWSServiceCatalogEndUserFullAccess'),
         ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'),
-      
+        ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ReadOnlyAccess')
       ],
         
       assumedBy: new iam.AccountRootPrincipal()
     })
 
 
-    const enduserAssociation = new CfnPortfolioPrincipalAssociation(this, 'enduser-role', {
+    new CfnPortfolioPrincipalAssociation(this, 'enduser-role', {
       principalType: 'IAM',
       principalArn: testUser.roleArn,
       portfolioId: portfolio.ref
+    }).addDependsOn(portfolio);
+
+    new CfnOutput(this, 'enduser-arn', {
+      exportName: 'EndUserRole',
+      value: testUser.roleArn
     })
-    enduserAssociation.addDependsOn(portfolio);
-
-    const eksClusterProduct = new EksClusterProduct(this, 'eks-product');
-    const pipelineProduct = new PipelineProduct(this, 'pipeline-product');
-    const containerProduct = new ContainerProduct(this, 'container-product');
-
-    new CfnPortfolioProductAssociation(this, 'cluster-association', {
-      portfolioId: portfolio.ref,
-      productId: eksClusterProduct.product.ref
-    });
-
-    new CfnPortfolioProductAssociation(this, 'pipeline-association', {
-      portfolioId: portfolio.ref,
-      productId: pipelineProduct.product.ref
-    });
-
-    new CfnPortfolioProductAssociation(this, 'container-association', {
-      portfolioId: portfolio.ref,
-      productId: containerProduct.product.ref
-    })
-
   }
 }

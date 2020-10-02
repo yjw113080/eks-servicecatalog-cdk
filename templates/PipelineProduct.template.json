@@ -91,7 +91,7 @@
                   {
                     "Ref": "AWS::Partition"
                   },
-                  ":codepipeline:eu-west-1:865200059792:",
+                  ":codepipeline:ap-northeast-2:865200059792:",
                   {
                     "Ref": "pipelineDBECAE49"
                   }
@@ -161,7 +161,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:eu-west-1:865200059792:log-group:/aws/codebuild/",
+                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
                       {
                         "Ref": "buildtoecr6773C6BF"
                       }
@@ -176,7 +176,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:eu-west-1:865200059792:log-group:/aws/codebuild/",
+                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
                       {
                         "Ref": "buildtoecr6773C6BF"
                       },
@@ -202,7 +202,7 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":codebuild:eu-west-1:865200059792:report-group/",
+                    ":codebuild:ap-northeast-2:865200059792:report-group/",
                     {
                       "Ref": "buildtoecr6773C6BF"
                     },
@@ -405,7 +405,7 @@
         "aws:cdk:path": "PipelineProduct/build-to-ecr/Resource"
       }
     },
-    "deploytoekseuwest1Role093B77E5": {
+    "deploytoeksapnortheast2RoleAD30D12C": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -422,10 +422,10 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "PipelineProduct/deploy-to-eks-eu-west-1/Role/Resource"
+        "aws:cdk:path": "PipelineProduct/deploy-to-eks-ap-northeast-2/Role/Resource"
       }
     },
-    "deploytoekseuwest1RoleDefaultPolicyB9D885BC": {
+    "deploytoeksapnortheast2RoleDefaultPolicy224731D4": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
@@ -445,7 +445,7 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":ecr:eu-west-1:865200059792:repository/aws-cdk/assets"
+                    ":ecr:ap-northeast-2:865200059792:repository/aws-cdk/assets"
                   ]
                 ]
               }
@@ -471,9 +471,9 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:eu-west-1:865200059792:log-group:/aws/codebuild/",
+                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
                       {
-                        "Ref": "deploytoekseuwest1E60C61D7"
+                        "Ref": "deploytoeksapnortheast2101FC7D7"
                       }
                     ]
                   ]
@@ -486,9 +486,9 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:eu-west-1:865200059792:log-group:/aws/codebuild/",
+                      ":logs:ap-northeast-2:865200059792:log-group:/aws/codebuild/",
                       {
-                        "Ref": "deploytoekseuwest1E60C61D7"
+                        "Ref": "deploytoeksapnortheast2101FC7D7"
                       },
                       ":*"
                     ]
@@ -512,9 +512,9 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":codebuild:eu-west-1:865200059792:report-group/",
+                    ":codebuild:ap-northeast-2:865200059792:report-group/",
                     {
-                      "Ref": "deploytoekseuwest1E60C61D7"
+                      "Ref": "deploytoeksapnortheast2101FC7D7"
                     },
                     "-*"
                   ]
@@ -594,18 +594,18 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "deploytoekseuwest1RoleDefaultPolicyB9D885BC",
+        "PolicyName": "deploytoeksapnortheast2RoleDefaultPolicy224731D4",
         "Roles": [
           {
-            "Ref": "deploytoekseuwest1Role093B77E5"
+            "Ref": "deploytoeksapnortheast2RoleAD30D12C"
           }
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "PipelineProduct/deploy-to-eks-eu-west-1/Role/DefaultPolicy/Resource"
+        "aws:cdk:path": "PipelineProduct/deploy-to-eks-ap-northeast-2/Role/DefaultPolicy/Resource"
       }
     },
-    "deploytoekseuwest1E60C61D7": {
+    "deploytoeksapnortheast2101FC7D7": {
       "Type": "AWS::CodeBuild::Project",
       "Properties": {
         "Artifacts": {
@@ -617,7 +617,7 @@
             {
               "Name": "REGION",
               "Type": "PLAINTEXT",
-              "Value": "eu-west-1"
+              "Value": "ap-northeast-2"
             },
             {
               "Name": "CLUSTER_NAME",
@@ -683,7 +683,7 @@
             "Fn::Join": [
               "",
               [
-                "865200059792.dkr.ecr.eu-west-1.",
+                "865200059792.dkr.ecr.ap-northeast-2.",
                 {
                   "Ref": "AWS::URLSuffix"
                 },
@@ -697,7 +697,7 @@
         },
         "ServiceRole": {
           "Fn::GetAtt": [
-            "deploytoekseuwest1Role093B77E5",
+            "deploytoeksapnortheast2RoleAD30D12C",
             "Arn"
           ]
         },
@@ -724,7 +724,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "PipelineProduct/deploy-to-eks-eu-west-1/Resource"
+        "aws:cdk:path": "PipelineProduct/deploy-to-eks-ap-northeast-2/Resource"
       }
     },
     "pipelineArtifactsBucketEncryptionKey16620CDF": {
@@ -848,7 +848,7 @@
               "Principal": {
                 "AWS": {
                   "Fn::GetAtt": [
-                    "deploytoekseuwest1Role093B77E5",
+                    "deploytoeksapnortheast2RoleAD30D12C",
                     "Arn"
                   ]
                 }
@@ -866,7 +866,7 @@
               "Principal": {
                 "AWS": {
                   "Fn::GetAtt": [
-                    "deploytoekseuwest1Role093B77E5",
+                    "deploytoeksapnortheast2RoleAD30D12C",
                     "Arn"
                   ]
                 }
@@ -881,6 +881,23 @@
       "DeletionPolicy": "Delete",
       "Metadata": {
         "aws:cdk:path": "PipelineProduct/pipeline/ArtifactsBucketEncryptionKey/Resource"
+      }
+    },
+    "pipelineArtifactsBucketEncryptionKeyAlias2DB3E5DA": {
+      "Type": "AWS::KMS::Alias",
+      "Properties": {
+        "AliasName": "alias/codepipeline-pipelineproductpipelineb53912dc",
+        "TargetKeyId": {
+          "Fn::GetAtt": [
+            "pipelineArtifactsBucketEncryptionKey16620CDF",
+            "Arn"
+          ]
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "PipelineProduct/pipeline/ArtifactsBucketEncryptionKeyAlias/Resource"
       }
     },
     "pipelineArtifactsBucket7D04D0D2": {
@@ -912,23 +929,6 @@
       "DeletionPolicy": "Retain",
       "Metadata": {
         "aws:cdk:path": "PipelineProduct/pipeline/ArtifactsBucket/Resource"
-      }
-    },
-    "pipelineArtifactsBucketEncryptionKeyAlias2DB3E5DA": {
-      "Type": "AWS::KMS::Alias",
-      "Properties": {
-        "AliasName": "alias/codepipeline-pipelineproductpipelineb53912dc",
-        "TargetKeyId": {
-          "Fn::GetAtt": [
-            "pipelineArtifactsBucketEncryptionKey16620CDF",
-            "Arn"
-          ]
-        }
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "PipelineProduct/pipeline/ArtifactsBucketEncryptionKeyAlias/Resource"
       }
     },
     "pipelineRole55399C5D": {
@@ -1137,7 +1137,7 @@
                 },
                 "Configuration": {
                   "ProjectName": {
-                    "Ref": "deploytoekseuwest1E60C61D7"
+                    "Ref": "deploytoeksapnortheast2101FC7D7"
                   }
                 },
                 "InputArtifacts": [
@@ -1333,7 +1333,7 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":codepipeline:eu-west-1:865200059792:",
+                    ":codepipeline:ap-northeast-2:865200059792:",
                     {
                       "Ref": "pipelineDBECAE49"
                     }
@@ -1464,7 +1464,7 @@
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "deploytoekseuwest1E60C61D7",
+                  "deploytoeksapnortheast2101FC7D7",
                   "Arn"
                 ]
               }

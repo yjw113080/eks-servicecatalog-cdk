@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  Cluster:
+    Type: String
+Resources:
+  TestResource:
+    Type: AWSQS::Kubernetes::Helm
+    Properties:
+      Repository: https://charts.bitnami.com/bitnami
+      Chart: bitnami/wordpress
+      ClusterID: !Ref Cluster
+Outputs:
+  Name:
+    Value: !GetAtt TestResource.Name

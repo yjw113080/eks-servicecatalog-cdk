@@ -4,4 +4,7 @@ import * as cdk from '@aws-cdk/core';
 import { ScEksStack } from '../lib/sc-eks-stack';
 
 const app = new cdk.App();
-new ScEksStack(app, 'ScEksStack');
+
+const account = app.node.tryGetContext('account') || process.env.CDK_INTEG_ACCOUNT || process.env.CDK_DEFAULT_ACCOUNT;
+
+new ScEksStack(app, 'ScEksStack', {env: {account, region: 'us-east-1'}});
