@@ -14,7 +14,7 @@ export class EksClusterProduct extends cdk.Construct {
             provisioningArtifactParameters: [
               {
                 info: {
-                  LoadTemplateFromURL: 'https://s3.amazonaws.com/aws-quickstart/quickstart-amazon-eks/templates/amazon-eks-master.template.yaml'
+                  LoadTemplateFromURL: 'https://s3.amazonaws.com/aws-quickstart/quickstart-amazon-eks/templates/amazon-eks-entrypoint-new-vpc.template.yaml'
                 }
               }
             ]

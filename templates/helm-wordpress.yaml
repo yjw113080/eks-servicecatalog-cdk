@@ -9,6 +9,3 @@ Resources:
       Repository: https://charts.bitnami.com/bitnami
       Chart: bitnami/wordpress
       ClusterID: !Ref Cluster
-Outputs:
-  Name:
-    Value: !GetAtt TestResource.Name

@@ -21,7 +21,7 @@
 3. Clone this repository and deploy 
 
     ```
-    git clone git@github.com:yjw113080/eks-servicecatalog-cdk.git
+    git clone https://github.com/yjw113080/eks-servicecatalog-cdk.git
     cd eks-servicecatalog-cdk
     npm i && npm run build
 
