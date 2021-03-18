@@ -1,6 +1,5 @@
 import * as cdk from '@aws-cdk/core';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { CfnParameter, CfnOutput, Fn } from '@aws-cdk/core';
+import { CfnParameter, CfnOutput } from '@aws-cdk/core';
 import { ProductTemplate } from '../../../utils/product.model';
 import codecommit = require('@aws-cdk/aws-codecommit');
 import ecr = require('@aws-cdk/aws-ecr');

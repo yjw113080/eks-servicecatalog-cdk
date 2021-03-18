@@ -3,7 +3,6 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as cdk from '@aws-cdk/core';
 import { PipelineProject } from '@aws-cdk/aws-codebuild';
 import * as ecr from '@aws-cdk/aws-ecr';
-import * as eks from '@aws-cdk/aws-eks';
 
 
 export function codeToECRspec (scope: cdk.Construct, apprepo: string) :PipelineProject {
