@@ -1,14 +1,19 @@
 import * as cdk from '@aws-cdk/core';
 import * as sc from '@aws-cdk/aws-servicecatalog';
 import { CfnLaunchRoleConstraint, CfnPortfolio, CfnPortfolioPrincipalAssociation, CfnPortfolioProductAssociation } from '@aws-cdk/aws-servicecatalog';
-import { CfnOutput, CfnParameter, CfnRefElement, CfnStack } from '@aws-cdk/core';
+import { CfnOutput, CfnParameter } from '@aws-cdk/core';
 import * as iam from '@aws-cdk/aws-iam';
 import { ServicePrincipal, ManagedPolicy, PolicyDocument, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 import { EksClusterProduct } from './product/eks-cluster';
 import { PipelineProduct } from './product/pipeline';
 import { ContainerProduct } from './product/eks-container';
 
+export interface ScProps extends cdk.StackProps {
+  enduserRole: iam.Role
+}
 export class ScEksStack extends cdk.Stack {
+  public readonly enduserRole: iam.Role
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -162,6 +167,7 @@ export class ScEksStack extends cdk.Stack {
         
       assumedBy: new iam.AccountRootPrincipal()
     })
+    this.enduserRole = testUser
 
 
     new CfnPortfolioPrincipalAssociation(this, 'enduser-role', {

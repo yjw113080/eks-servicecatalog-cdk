@@ -1,5 +1,5 @@
 import * as cdk from '@aws-cdk/core';
-import { CfnParameter, CfnOutput } from '@aws-cdk/core';
+import { CfnParameter, CfnOutput, Fn } from '@aws-cdk/core';
 import { ProductTemplate } from '../../../utils/product.model';
 import codecommit = require('@aws-cdk/aws-codecommit');
 import ecr = require('@aws-cdk/aws-ecr');
@@ -50,6 +50,8 @@ class PipelineTemplate extends cdk.Stack {
     const repo =  new codecommit.Repository(this, 'codecommit-repo', {
         repositoryName: repoName.valueAsString
     });
+\
+
     const ecrRepo = new ecr.Repository(this, `ecr-repo`);
 
     const buildForECR = codeToECRspec(this, ecrRepo.repositoryUri);
@@ -85,20 +87,15 @@ class PipelineTemplate extends cdk.Stack {
         ]
     })
 
-    new CfnOutput(this, 'cc-repo-uri', {
-      exportName: 'CodeCommitRepository',
+    new CfnOutput(this, 'CodeCommitRepository', {
       value: repo.repositoryCloneUrlHttp
     })
 
-    new CfnOutput(this, 'ecr-repo-uri', {
-      exportName: 'ECRrepository',
-      value: ecrRepo.repositoryUri
-    })
-
-    new CfnOutput(this, 'pipeline-ouput', {
-      exportName: 'PipelineConsoleUrl',
+    new CfnOutput(this, 'CodePipelineConsole', {
       value: `https://console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipeline.pipelineName}/view?region=${cdk.Stack.of(this).region}`
     })
+
+
   }
 }
 

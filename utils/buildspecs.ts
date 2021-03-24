@@ -46,12 +46,11 @@ export function codeToECRspec (scope: cdk.Construct, apprepo: string) :PipelineP
 
 export function deployToEKSspec (scope: cdk.Construct, region: string, cluster: string, apprepo: ecr.IRepository, roleToAssume: string) :PipelineProject {
     
+    // const buildImageRepo = new ecr.Repository.fromRepository
     const deployBuildSpec = new codebuild.PipelineProject(scope, `deploy-to-eks-${region}`, {
         environment: {
-            buildImage: codebuild.LinuxBuildImage.fromDockerRegistry('jiwony/kubectl-buildimage')
-            // buildImage: codebuild.LinuxBuildImage.fromAsset(scope, `custom-image-for-eks-${region}`, {
-            //     directory: './utils/buildimage'
-            // })
+            buildImage: codebuild.LinuxBuildImage.UBUNTU_14_04_DOCKER_18_09_0,
+            privileged: true
         },
         environmentVariables: { 
             'REGION': { value:  region },
@@ -63,9 +62,12 @@ export function deployToEKSspec (scope: cdk.Construct, region: string, cluster: 
             phases: {
               install: {
                 commands: [
-                  'env',
-                  'export TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}',
-                  '/usr/local/bin/entrypoint.sh']
+                    'curl -sS -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl',
+                    'chmod +x ./kubectl',
+                    'apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli',
+                    'export TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}',
+                    'export PATH=$PWD/:$PATH'
+                ]
               },
               build: {
                 commands: [
@@ -75,6 +77,7 @@ export function deployToEKSspec (scope: cdk.Construct, region: string, cluster: 
                     `export AWS_SESSION_TOKEN="$(echo \${CREDENTIALS} | jq -r '.Credentials.SessionToken')"`,
                     `export AWS_EXPIRATION=$(echo \${CREDENTIALS} | jq -r '.Credentials.Expiration')`,
                     `sed -i 's@CONTAINER_IMAGE@'"$ECR_REPO_URI:$TAG"'@' app-deployment.yaml`,
+                    'aws eks update-kubeconfig --name $CLUSTER_NAME',
                     'kubectl apply -f app-deployment.yaml'
                 ]
               }
