@@ -50,7 +50,7 @@ class PipelineTemplate extends cdk.Stack {
     const repo =  new codecommit.Repository(this, 'codecommit-repo', {
         repositoryName: repoName.valueAsString
     });
-\
+
 
     const ecrRepo = new ecr.Repository(this, `ecr-repo`);
 
